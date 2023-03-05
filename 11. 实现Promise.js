@@ -28,4 +28,12 @@ class Promise {
       this.reason = reason;
     }
   };
+
+  then(onFulfilled, onRejected) {
+    if (this.status === FULFILLED) {
+      onFulfilled(this.value);
+    } else if (this.status === REJECTED) {
+      onRejected(this.reason);
+    }
+  }
 }
