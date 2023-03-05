@@ -2,7 +2,7 @@ const PENDING = 'pending';
 const REJECTED = 'rejected';
 const FULFILLED = 'fulfilled';
 
-class Promise {
+class MyPromise {
   constructor(executor) {
     // executor执行器，进入会立即执行
     executor(this.resolve, this.reject);
@@ -37,3 +37,17 @@ class Promise {
     }
   }
 }
+
+const promise = new MyPromise((resolve, reject) => {
+  resolve('success');
+  reject('error');
+});
+
+promise.then(
+  (value) => {
+    console.log('resolve', value);
+  },
+  (reason) => {
+    console.log('reject', reason);
+  }
+);
