@@ -60,9 +60,16 @@ const promise = new MyPromise((resolve, reject) => {
 
 promise.then(
   (value) => {
-    console.log('resolve', value);
-  },
-  (reason) => {
-    console.log('reject', reason);
+    console.log('1');
+  }
+);
+promise.then(
+  (value) => {
+    console.log('2');
+  }
+);
+promise.then(
+  (value) => {
+    console.log('3');
   }
 );
