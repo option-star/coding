@@ -45,6 +45,16 @@ class MyPromise {
   };
 
   then(onFulfilled, onRejected) {
+    // 如果 onFulfilled或者onRejected不传
+    onFulfilled =
+      typeof onFulfilled === 'function' ? onFulfilled : (value) => value;
+    onRejected =
+      typeof onRejected === 'function'
+        ? onRejected
+        : (reason) => {
+            throw reason;
+          };
+
     const promise2 = new MyPromise((resolve, reject) => {
       if (this.status === FULFILLED) {
         queueMicrotask(() => {
