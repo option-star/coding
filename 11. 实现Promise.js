@@ -13,6 +13,9 @@ class MyPromise {
   value = null;
   reason = null;
 
+  onFulfilledCallback = null;
+  onRejectedCallback = null;
+
   resolve = (value) => {
     // 只有PENDING状态才会进行状态修改
     if (this.status === PENDING) {
@@ -34,6 +37,9 @@ class MyPromise {
       onFulfilled(this.value);
     } else if (this.status === REJECTED) {
       onRejected(this.reason);
+    } else if (this.status === PENDING) {
+      this.onFulfilledCallback = onFulfilled;
+      this.onRejectedCallback = onRejected;
     }
   }
 }
