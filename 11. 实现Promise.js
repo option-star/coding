@@ -21,6 +21,8 @@ class MyPromise {
     if (this.status === PENDING) {
       this.status = FULFILLED;
       this.value = value;
+
+      this.onFulfilledCallback?.(value);
     }
   };
 
@@ -29,6 +31,7 @@ class MyPromise {
     if (this.status === PENDING) {
       this.status = REJECTED;
       this.reason = reason;
+      this.onRejectedCallback?.(reason);
     }
   };
 
