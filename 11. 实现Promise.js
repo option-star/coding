@@ -44,7 +44,7 @@ class MyPromise {
     const promise2 = new MyPromise((resolve, reject) => {
       if (this.status === FULFILLED) {
         const result = onFulfilled(this.value);
-        resolvePromise(result, resolve, reject);
+        resolvePromise(promise2, result, resolve, reject);
       } else if (this.status === REJECTED) {
         onRejected(this.reason);
       } else if (this.status === PENDING) {
@@ -57,7 +57,10 @@ class MyPromise {
   }
 }
 
-function resolvePromise(result, resolve, reject) {
+function resolvePromise(promise, result, resolve, reject) {
+  if (promise === result) {
+    return reject(new TypeError('循环引用自身'));
+  }
   if (result instanceof MyPromise) {
     result.then(resolve, reject);
   } else {
@@ -69,19 +72,7 @@ const promise = new MyPromise((resolve, reject) => {
   resolve('success');
 });
 
-const other = () => {
-  return new MyPromise((resolve, reject) => {
-    resolve('other');
-  });
-};
-
-promise
-  .then((value) => {
-    console.log('1');
-    console.log('resolve', value);
-    return other();
-  })
-  .then((value) => {
-    console.log('2');
-    console.log('resolve', value);
-  });
+const p1 = promise.then((value) => {
+  console.log('resolve', value);
+  return p1;
+});
