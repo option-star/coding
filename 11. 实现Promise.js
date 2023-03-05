@@ -5,7 +5,11 @@ const FULFILLED = 'fulfilled';
 class MyPromise {
   constructor(executor) {
     // executor执行器，进入会立即执行
-    executor(this.resolve, this.reject);
+    try {
+      executor(this.resolve, this.reject);
+    } catch (error) {
+      this.reject(error);
+    }
   }
 
   status = PENDING;
