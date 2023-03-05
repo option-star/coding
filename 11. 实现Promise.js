@@ -41,35 +41,47 @@ class MyPromise {
   };
 
   then(onFulfilled, onRejected) {
-    if (this.status === FULFILLED) {
-      onFulfilled(this.value);
-    } else if (this.status === REJECTED) {
-      onRejected(this.reason);
-    } else if (this.status === PENDING) {
-      this.onFulfilledCallback.push(onFulfilled);
-      this.onRejectedCallback.push(onRejected);
-    }
+    const promise2 = new MyPromise((resolve, reject) => {
+      if (this.status === FULFILLED) {
+        const result = onFulfilled(this.value);
+        resolvePromise(result, resolve, reject);
+      } else if (this.status === REJECTED) {
+        onRejected(this.reason);
+      } else if (this.status === PENDING) {
+        this.onFulfilledCallback.push(onFulfilled);
+        this.onRejectedCallback.push(onRejected);
+      }
+    });
+
+    return promise2;
+  }
+}
+
+function resolvePromise(result, resolve, reject) {
+  if (result instanceof MyPromise) {
+    result.then(resolve, reject);
+  } else {
+    resolve(result);
   }
 }
 
 const promise = new MyPromise((resolve, reject) => {
-  setTimeout(() => {
-    resolve('success');
-  }, 2000);
+  resolve('success');
 });
 
-promise.then(
-  (value) => {
+const other = () => {
+  return new MyPromise((resolve, reject) => {
+    resolve('other');
+  });
+};
+
+promise
+  .then((value) => {
     console.log('1');
-  }
-);
-promise.then(
-  (value) => {
+    console.log('resolve', value);
+    return other();
+  })
+  .then((value) => {
     console.log('2');
-  }
-);
-promise.then(
-  (value) => {
-    console.log('3');
-  }
-);
+    console.log('resolve', value);
+  });
