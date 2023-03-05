@@ -13,8 +13,8 @@ class MyPromise {
   value = null;
   reason = null;
 
-  onFulfilledCallback = null;
-  onRejectedCallback = null;
+  onFulfilledCallback = [];
+  onRejectedCallback = [];
 
   resolve = (value) => {
     // 只有PENDING状态才会进行状态修改
@@ -22,7 +22,9 @@ class MyPromise {
       this.status = FULFILLED;
       this.value = value;
 
-      this.onFulfilledCallback?.(value);
+      while (this.onFulfilledCallback.length) {
+        this.onFulfilledCallback?.shift()(value);
+      }
     }
   };
 
@@ -32,6 +34,9 @@ class MyPromise {
       this.status = REJECTED;
       this.reason = reason;
       this.onRejectedCallback?.(reason);
+      while (this.onRejectedCallback.length) {
+        this.onRejectedCallback?.shift()(reason);
+      }
     }
   };
 
@@ -41,8 +46,8 @@ class MyPromise {
     } else if (this.status === REJECTED) {
       onRejected(this.reason);
     } else if (this.status === PENDING) {
-      this.onFulfilledCallback = onFulfilled;
-      this.onRejectedCallback = onRejected;
+      this.onFulfilledCallback.push(onFulfilled);
+      this.onRejectedCallback.push(onRejected);
     }
   }
 }
