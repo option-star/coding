@@ -48,8 +48,9 @@ class MyPromise {
 }
 
 const promise = new MyPromise((resolve, reject) => {
-  resolve('success');
-  reject('error');
+  setTimeout(() => {
+    resolve('success');
+  }, 2000);
 });
 
 promise.then(
