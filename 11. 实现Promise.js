@@ -37,7 +37,7 @@ class MyPromise {
     if (this.status === PENDING) {
       this.status = REJECTED;
       this.reason = reason;
-      
+
       while (this.onRejectedCallback.length) {
         this.onRejectedCallback?.shift()(reason);
       }
@@ -56,10 +56,34 @@ class MyPromise {
           }
         });
       } else if (this.status === REJECTED) {
-        onRejected(this.reason);
+        queueMicrotask(() => {
+          try {
+            const result = onRejected(this.reason);
+          } catch (error) {
+            reject(error);
+          }
+        });
       } else if (this.status === PENDING) {
-        this.onFulfilledCallback.push(onFulfilled);
-        this.onRejectedCallback.push(onRejected);
+        this.onFulfilledCallback.push(
+          queueMicrotask(() => {
+            try {
+              const result = onFulfilled(this.value);
+              resolvePromise(result);
+            } catch (error) {
+              reject(error);
+            }
+          })
+        );
+        this.onRejectedCallback.push(
+          queueMicrotask(() => {
+            try {
+              const result = onRejected(this.reason);
+              resolvePromise(result);
+            } catch (error) {
+              reject(error);
+            }
+          })
+        );
       }
     });
 
