@@ -1,6 +1,6 @@
 const clone = (target) => {
   if (typeof target === 'object') {
-    const cloneTarget = {};
+    const cloneTarget = Array.isArray(target) ? [] : {};
     for (const key in target) {
       cloneTarget[key] = clone(target[key]);
     }
@@ -13,13 +13,10 @@ const clone = (target) => {
 const target = {
   field1: 1,
   field2: undefined,
-  field3: 'Con',
-  field4: {
+  field3: {
     child: 'child',
-    child2: {
-      child2: 'child2',
-    },
   },
+  field4: [2, 4, 8],
 };
 
 const result = clone(target);
