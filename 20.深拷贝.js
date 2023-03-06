@@ -1,16 +1,27 @@
 const clone = (target) => {
-  const cloneTarget = {};
-  for (const key in target) {
-    cloneTarget[key] = target[key];
+  if (typeof target === 'object') {
+    const cloneTarget = {};
+    for (const key in target) {
+      cloneTarget[key] = clone(target[key]);
+    }
+    return cloneTarget;
+  } else {
+    return target;
   }
-  return cloneTarget;
 };
 
-const test = {
-  a: 1,
-  b: undefined,
+const target = {
+  field1: 1,
+  field2: undefined,
+  field3: 'Con',
+  field4: {
+    child: 'child',
+    child2: {
+      child2: 'child2',
+    },
+  },
 };
 
-const result = clone(test);
-console.log(result)
-console.log(result === test);
+const result = clone(target);
+console.log(result);
+console.log(result === target);
